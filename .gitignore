@@ -35,11 +35,16 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Local data files
+# Model files (will be generated on deployment)
 *.pkl
+
+# Data files (will be generated on deployment)
 data/*.csv
 
 # Environment variables
 .env
 .env.local
 .env.production
+
+# Render specific
+.render/

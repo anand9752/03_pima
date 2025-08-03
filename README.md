@@ -261,57 +261,68 @@ The Random Forest model provides:
 python app.py
 ```
 
-### Vercel Deployment
+### Render Deployment
 
 #### Prerequisites
-- Node.js and npm installed
-- Vercel CLI installed: `npm i -g vercel`
-- Git repository
+- Git repository (GitHub, GitLab, or Bitbucket)
+- Render account (free at [render.com](https://render.com))
 
 #### Step-by-Step Deployment
 
-1. **Initialize Git Repository** (if not already done)
+1. **Push your code to GitHub**
 ```bash
-git init
 git add .
-git commit -m "Initial commit"
+git commit -m "Prepare for Render deployment"
+git push origin main
 ```
 
-2. **Install Vercel CLI**
-```bash
-npm i -g vercel
-```
+2. **Deploy on Render**
+   - Go to [render.com](https://render.com) and sign up/login
+   - Click "New +" → "Web Service"
+   - Connect your GitHub repository
+   - Select your repository and branch (main)
 
-3. **Login to Vercel**
-```bash
-vercel login
-```
+3. **Configure the deployment**
+   - **Name**: `pima-diabetes-prediction`
+   - **Environment**: `Python`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn app:app`
+   - **Plan**: Choose Free or paid plan
 
-4. **Deploy to Vercel**
-```bash
-vercel
-```
+4. **Set Environment Variables** (Optional but recommended)
+   - `SECRET_KEY`: A secure random string
+   - `FLASK_ENV`: `production`
 
-5. **Production Deployment**
-```bash
-vercel --prod
-```
+5. **Deploy**
+   - Click "Create Web Service"
+   - Render will automatically build and deploy your app
+   - Your app will be available at: `https://your-app-name.onrender.com`
 
-#### Vercel Configuration Files
-- `vercel.json`: Vercel deployment configuration
-- `index.py`: Entry point for Vercel
-- `requirements.txt`: Python dependencies
-- `.env`: Environment variables
+#### Deployment Files for Render
+- ✅ **`Procfile`**: Specifies how to run the application
+- ✅ **`render.yaml`**: Render service configuration (optional)
+- ✅ **`requirements.txt`**: Python dependencies
+- ✅ **Updated `.gitignore`**: Excludes model files (generated on deployment)
 
-#### Environment Variables (Set in Vercel Dashboard)
-- `SECRET_KEY`: Flask secret key for sessions
-- `FLASK_ENV`: Set to "production"
+#### Features of Render Deployment
+- **Automatic Builds**: Deploys automatically on git push
+- **Free SSL**: HTTPS enabled by default
+- **Custom Domains**: Add your own domain
+- **Persistent Storage**: Files persist between deployments
+- **Environment Variables**: Secure configuration management
+- **Auto-scaling**: Handles traffic spikes automatically
+
+#### Important Notes
+1. **Model Training**: The model will train automatically on first deployment
+2. **Data Persistence**: CSV files and model will persist on Render
+3. **Cold Starts**: Free plan may have cold start delays
+4. **Resource Limits**: Free plan has CPU and memory limits
 
 ### Other Deployment Options
+- **Heroku**: Similar to Render with Procfile support
+- **Railway**: Modern deployment platform
 - **Docker**: Containerize with Dockerfile
-- **Heroku**: Deploy with Procfile
 - **AWS/GCP/Azure**: Cloud platform deployment
-- **WSGI Servers**: Use Gunicorn or uWSGI for production
 
 ## 🤝 Contributing
 
