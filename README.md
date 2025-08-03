@@ -1,4 +1,4 @@
-# Pima Diabetes Prediction System
+d# Pima Diabetes Prediction System
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.1.1-green.svg)
@@ -261,11 +261,57 @@ The Random Forest model provides:
 python app.py
 ```
 
-### Production Deployment
+### Vercel Deployment
+
+#### Prerequisites
+- Node.js and npm installed
+- Vercel CLI installed: `npm i -g vercel`
+- Git repository
+
+#### Step-by-Step Deployment
+
+1. **Initialize Git Repository** (if not already done)
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+2. **Install Vercel CLI**
+```bash
+npm i -g vercel
+```
+
+3. **Login to Vercel**
+```bash
+vercel login
+```
+
+4. **Deploy to Vercel**
+```bash
+vercel
+```
+
+5. **Production Deployment**
+```bash
+vercel --prod
+```
+
+#### Vercel Configuration Files
+- `vercel.json`: Vercel deployment configuration
+- `index.py`: Entry point for Vercel
+- `requirements.txt`: Python dependencies
+- `.env`: Environment variables
+
+#### Environment Variables (Set in Vercel Dashboard)
+- `SECRET_KEY`: Flask secret key for sessions
+- `FLASK_ENV`: Set to "production"
+
+### Other Deployment Options
 - **Docker**: Containerize with Dockerfile
-- **Cloud Platforms**: Deploy to AWS, GCP, or Azure
+- **Heroku**: Deploy with Procfile
+- **AWS/GCP/Azure**: Cloud platform deployment
 - **WSGI Servers**: Use Gunicorn or uWSGI for production
-- **Reverse Proxy**: Configure with Nginx for better performance
 
 ## 🤝 Contributing
 

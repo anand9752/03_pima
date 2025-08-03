@@ -1,4 +1,5 @@
 import os
+import tempfile
 from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -10,33 +11,32 @@ from sklearn.metrics import accuracy_score
 
 # instance of Flask
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = os.environ.get('SECRET_KEY', 'your_secret_key_here')
 
+# Use temporary directory for Vercel
+temp_dir = tempfile.gettempdir()
 
 # file path 
-MODEL_PATH = 'model.pkl'
-REAL_TIME_PREDICTIONS_PATH = 'data/real_time_predictions.csv'
-BATCH_PREDICTIONS_PATH = 'data/batch_predictions.csv'
-ONLINE_DATA_PATH = 'data/online_data.csv'
+MODEL_PATH = os.path.join(temp_dir, 'model.pkl')
+REAL_TIME_PREDICTIONS_PATH = os.path.join(temp_dir, 'real_time_predictions.csv')
+BATCH_PREDICTIONS_PATH = os.path.join(temp_dir, 'batch_predictions.csv')
+ONLINE_DATA_PATH = os.path.join(temp_dir, 'online_data.csv')
 
 
 REQUIRED_FEATURES = ['Pregnancies', "Glucose", "BloodPressure","SkinThickness","Insulin","BMI","DiabetesPedigreeFunction","Age"]
 
 
-# Function to fetch and save data from an online API
 def fetch_and_save_data():
     '''Fetch the dataset from an online API'''
     url = f'https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv'
     columns = REQUIRED_FEATURES + ['Outcome']
     data = pd.read_csv(url, header=None, names=columns)
-    os.makedirs("data", exist_ok=True) # exist_ok= True indicate 
-    # if the directory already exists, it won't raise an error
+    
     # save the data to a csv file
-
     data.to_csv(ONLINE_DATA_PATH, index=False) #index = False means 
     # do not write row indices
 
-    print("Dataset downloaded and saved into data folder")
+    print("Dataset downloaded and saved")
     return data
 
 # Function to train and save the model
@@ -100,9 +100,6 @@ def predict():
         # Save this prediction into a file
         record = {**data, "Prediction": int(prediction[0])}
         
-        # Ensure data directory exists
-        os.makedirs("data", exist_ok=True)
-        
         # Append the record to the real-time predictions CSV file
         pd.DataFrame([record]).to_csv(REAL_TIME_PREDICTIONS_PATH, mode='a', header=not os.path.exists(REAL_TIME_PREDICTIONS_PATH), index=False)
         
@@ -130,9 +127,6 @@ def batch_predict():
         
         # Save predictions to a DataFrame
         batch_data['Prediction'] = predictions
-        
-        # Ensure data directory exists
-        os.makedirs("data", exist_ok=True)
         
         # Save the batch predictions to a CSV file
         batch_data.to_csv(BATCH_PREDICTIONS_PATH, index=False)
@@ -193,9 +187,6 @@ def submit_prediction():
         # Save this prediction into a file
         record = {**data, "Prediction": int(prediction[0])}
         
-        # Ensure data directory exists
-        os.makedirs("data", exist_ok=True)
-        
         # Append the record to the real-time predictions CSV file
         pd.DataFrame([record]).to_csv(REAL_TIME_PREDICTIONS_PATH, mode='a', header=not os.path.exists(REAL_TIME_PREDICTIONS_PATH), index=False)
         
@@ -212,10 +203,10 @@ def submit_prediction():
         flash(f'Error: {str(e)}', 'error')
         return redirect(url_for('predict_form'))
 
-if __name__ == '__main__':
-    # Ensure the model is trained before starting the server
-    if not os.path.exists(MODEL_PATH):
-        train_and_save_model()
+# Initialize model when module is imported
+if not os.path.exists(MODEL_PATH):
+    train_and_save_model()
 
+if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
 
