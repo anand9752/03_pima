@@ -42,37 +42,53 @@ def fetch_and_save_data():
 # Function to train and save the model
 def train_and_save_model():
     '''Training the model and save it to a file'''
-    if not os.path.exists(ONLINE_DATA_PATH):
-        data = fetch_and_save_data()
-    else:
-        data = pd.read_csv(ONLINE_DATA_PATH)
-    
-    X = data.drop(columns=['Outcome'])
-    y = data['Outcome']
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
+    try:
+        if not os.path.exists(ONLINE_DATA_PATH):
+            data = fetch_and_save_data()
+        else:
+            data = pd.read_csv(ONLINE_DATA_PATH)
+        
+        X = data.drop(columns=['Outcome'])
+        y = data['Outcome']
+        
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        
+        model = RandomForestClassifier(n_estimators=50, random_state=42, max_depth=10)  # Reduced complexity
+        model.fit(X_train, y_train)
 
-    # Evaluate the model
-    y_pred = model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    print(f"Model accuracy: {accuracy:.4f}")
+        # Evaluate the model
+        y_pred = model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        print(f"Model accuracy: {accuracy:.4f}")
 
-    # Save the model
-    joblib.dump(model, MODEL_PATH)
-    print(f"Model is saved to {MODEL_PATH}")
+        # Save the model
+        joblib.dump(model, MODEL_PATH)
+        print(f"Model is saved to {MODEL_PATH}")
+        return model
+    except Exception as e:
+        print(f"Error training model: {e}")
+        # Return a simple model if training fails
+        return RandomForestClassifier(n_estimators=10, random_state=42)
 
 # Function to load the trained model
 def load_model():
     '''Load the trained model'''
-    if not os.path.exists(MODEL_PATH):
-        print("Model not found. Training a new model!!!")
-        train_and_save_model()
-    return joblib.load(MODEL_PATH)
+    try:
+        if not os.path.exists(MODEL_PATH):
+            print("Model not found. Training a new model!!!")
+            return train_and_save_model()
+        return joblib.load(MODEL_PATH)
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        print("Training a new model...")
+        return train_and_save_model()
 
-model = load_model()
+# Initialize model - but handle gracefully for Vercel
+try:
+    model = load_model()
+except Exception as e:
+    print(f"Failed to initialize model: {e}")
+    model = None
 
 # Function to validate input data for missing features
 def validate_input(data, required_features):
@@ -86,7 +102,12 @@ def validate_input(data, required_features):
 @app.route('/predict', methods=['POST'])
 def predict():
     '''Real-time prediction endpoint for a specific use case'''
+    global model
     try:
+        # Ensure model is loaded
+        if model is None:
+            model = load_model()
+            
         data = request.get_json()
         validate_input(data, REQUIRED_FEATURES)
         
@@ -101,17 +122,27 @@ def predict():
         record = {**data, "Prediction": int(prediction[0])}
         
         # Append the record to the real-time predictions CSV file
-        pd.DataFrame([record]).to_csv(REAL_TIME_PREDICTIONS_PATH, mode='a', header=not os.path.exists(REAL_TIME_PREDICTIONS_PATH), index=False)
+        try:
+            pd.DataFrame([record]).to_csv(REAL_TIME_PREDICTIONS_PATH, mode='a', header=not os.path.exists(REAL_TIME_PREDICTIONS_PATH), index=False)
+        except:
+            pass  # Ignore file saving errors on Vercel
         
         return jsonify(record), 200
     
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
     
 @app.route('/batch-predict', methods=['POST'])
 def batch_predict():
     '''Batch prediction endpoint'''
+    global model
     try:
+        # Ensure model is loaded
+        if model is None:
+            model = load_model()
+            
         # Check if file is provided
         if 'file' not in request.files:
             return jsonify({'error': 'No files uploaded by user'}), 400
@@ -129,7 +160,10 @@ def batch_predict():
         batch_data['Prediction'] = predictions
         
         # Save the batch predictions to a CSV file
-        batch_data.to_csv(BATCH_PREDICTIONS_PATH, index=False)
+        try:
+            batch_data.to_csv(BATCH_PREDICTIONS_PATH, index=False)
+        except:
+            pass  # Ignore file saving errors on Vercel
         
         return jsonify(batch_data.to_dict(orient='records')), 200
     
@@ -164,7 +198,12 @@ def about():
 @app.route('/submit-prediction', methods=['POST'])
 def submit_prediction():
     '''Handle form submission for single prediction'''
+    global model
     try:
+        # Ensure model is loaded
+        if model is None:
+            model = load_model()
+            
         # Get form data
         data = {}
         for feature in REQUIRED_FEATURES:
@@ -188,7 +227,10 @@ def submit_prediction():
         record = {**data, "Prediction": int(prediction[0])}
         
         # Append the record to the real-time predictions CSV file
-        pd.DataFrame([record]).to_csv(REAL_TIME_PREDICTIONS_PATH, mode='a', header=not os.path.exists(REAL_TIME_PREDICTIONS_PATH), index=False)
+        try:
+            pd.DataFrame([record]).to_csv(REAL_TIME_PREDICTIONS_PATH, mode='a', header=not os.path.exists(REAL_TIME_PREDICTIONS_PATH), index=False)
+        except:
+            pass  # Ignore file saving errors on Vercel
         
         result = {
             'prediction': int(prediction[0]),
@@ -203,9 +245,7 @@ def submit_prediction():
         flash(f'Error: {str(e)}', 'error')
         return redirect(url_for('predict_form'))
 
-# Initialize model when module is imported
-if not os.path.exists(MODEL_PATH):
-    train_and_save_model()
+# Model will be initialized when needed
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
