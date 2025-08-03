@@ -61,12 +61,12 @@ The application uses the **Pima Indians Diabetes Dataset** which contains medica
 ### Technology Stack
 
 #### Backend
-- **Python 3.8+**: Core programming language
-- **Flask 3.1.1**: Web framework for API and web interface
-- **Scikit-learn 1.7.1**: Machine learning library
-- **Pandas 2.3.1**: Data manipulation and analysis
-- **NumPy 2.3.2**: Numerical computing
-- **Joblib 1.5.1**: Model serialization
+- **Python 3.11.5**: Core programming language (compatible version)
+- **Flask 2.2.5**: Web framework for API and web interface
+- **Scikit-learn 1.2.2**: Machine learning library (stable version)
+- **Pandas 1.5.3**: Data manipulation and analysis
+- **NumPy 1.24.3**: Numerical computing
+- **Joblib 1.2.0**: Model serialization
 
 #### Frontend
 - **HTML5 & CSS3**: Structure and styling
@@ -85,29 +85,31 @@ The application uses the **Pima Indians Diabetes Dataset** which contains medica
 ```
 03_pima/
 ├── app.py                     # Main Flask application
-├── model.pkl                  # Trained ML model (auto-generated)
-├── requirement.txt            # Python dependencies
-├── README.md                  # Project documentation
+├── Procfile                   # Render startup command
+├── render.yaml               # Render configuration
+├── runtime.txt               # Python version specification
+├── requirements.txt          # Python dependencies
+├── README.md                 # Project documentation
 │
-├── data/                      # Data directory
-│   ├── online_data.csv        # Downloaded dataset
+├── data/                     # Data directory (auto-generated)
+│   ├── online_data.csv       # Downloaded dataset
 │   ├── real_time_predictions.csv  # Single predictions log
-│   └── batch_predictions.csv  # Batch predictions log
+│   └── batch_predictions.csv # Batch predictions log
 │
-├── static/                    # Static web assets
+├── static/                   # Static web assets
 │   ├── css/
-│   │   └── style.css         # Custom CSS styles
+│   │   └── style.css        # Custom CSS styles
 │   └── js/
-│       └── main.js           # JavaScript functionality
+│       └── main.js          # JavaScript functionality
 │
-└── templates/                 # HTML templates
-    ├── base.html             # Base template with layout
-    ├── index.html            # Homepage
-    ├── predict_form.html     # Single prediction form
-    ├── batch_form.html       # Batch prediction form
-    ├── result.html           # Single prediction results
-    ├── results.html          # Results page
-    └── about.html            # About page
+└── templates/                # HTML templates
+    ├── base.html            # Base template with layout
+    ├── index.html           # Homepage
+    ├── predict_form.html    # Single prediction form
+    ├── batch_form.html      # Batch prediction form
+    ├── result.html          # Single prediction results
+    ├── results.html         # Results page
+    └── about.html           # About page
 ```
 
 ## 🔧 Installation & Setup
@@ -301,7 +303,8 @@ git push origin main
 #### Deployment Files for Render
 - ✅ **`Procfile`**: Specifies how to run the application
 - ✅ **`render.yaml`**: Render service configuration (optional)
-- ✅ **`requirements.txt`**: Python dependencies
+- ✅ **`runtime.txt`**: Python version specification (3.11.5)
+- ✅ **`requirements.txt`**: Python dependencies (stable versions)
 - ✅ **Updated `.gitignore`**: Excludes model files (generated on deployment)
 
 #### Features of Render Deployment
@@ -317,6 +320,37 @@ git push origin main
 2. **Data Persistence**: CSV files and model will persist on Render
 3. **Cold Starts**: Free plan may have cold start delays
 4. **Resource Limits**: Free plan has CPU and memory limits
+5. **Python Version**: Uses Python 3.11.5 for compatibility
+
+#### Troubleshooting Deployment Issues
+
+**Common Issues and Solutions:**
+
+1. **Scikit-learn Compilation Error**
+   ```
+   Solution: Use Python 3.11.x instead of 3.13.x
+   - Ensure runtime.txt specifies python-3.11.5
+   - Use compatible package versions in requirements.txt
+   ```
+
+2. **Package Installation Failures**
+   ```
+   Solution: Update requirements.txt with stable versions:
+   Flask==2.2.5
+   scikit-learn==1.2.2
+   pandas==1.5.3
+   numpy==1.24.3
+   ```
+
+3. **Build Command Issues**
+   ```
+   Solution: Use: pip install --upgrade pip && pip install -r requirements.txt
+   ```
+
+4. **Memory Issues during Build**
+   ```
+   Solution: Use lighter package versions or upgrade to paid plan
+   ```
 
 ### Other Deployment Options
 - **Heroku**: Similar to Render with Procfile support
