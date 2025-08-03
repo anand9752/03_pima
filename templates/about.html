@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block title %}About - Pima Diabetes Prediction{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- About Section -->
+        <div class="card shadow mb-5">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    About Pima Diabetes Prediction System
+                </h3>
+            </div>
+            <div class="card-body">
+                <p class="lead">
+                    This system uses machine learning to predict diabetes risk based on the famous Pima Indians Diabetes dataset.
+                    It employs a Random Forest classifier trained on historical medical data to provide accurate predictions.
+                </p>
+                
+                <h5><i class="fas fa-database me-2"></i>Dataset Information</h5>
+                <p>
+                    The Pima Indian Diabetes Dataset originally from the National Institute of Diabetes and Digestive and Kidney Diseases. 
+                    The objective is to predict based on diagnostic measurements whether a patient has diabetes.
+                </p>
+                
+                <ul>
+                    <li><strong>Source:</strong> National Institute of Diabetes and Digestive and Kidney Diseases</li>
+                    <li><strong>Population:</strong> Pima Indian females, at least 21 years old</li>
+                    <li><strong>Features:</strong> 8 medical diagnostic measurements</li>
+                    <li><strong>Target:</strong> Binary classification (diabetes/no diabetes)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Model Details -->
+        <div class="card shadow mb-5">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-robot me-2"></i>
+                    Machine Learning Model
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Algorithm</h6>
+                        <p>Random Forest Classifier</p>
+                        
+                        <h6>Model Parameters</h6>
+                        <ul>
+                            <li>n_estimators: 100</li>
+                            <li>random_state: 42</li>
+                            <li>Train/Test split: 80/20</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Why Random Forest?</h6>
+                        <ul>
+                            <li>Handles non-linear relationships</li>
+                            <li>Resistant to overfitting</li>
+                            <li>Provides feature importance</li>
+                            <li>Works well with medical data</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Explanation -->
+        <div class="card shadow mb-5">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-list-ul me-2"></i>
+                    Feature Descriptions
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Feature</th>
+                                <th>Description</th>
+                                <th>Medical Significance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Pregnancies</strong></td>
+                                <td>Number of times pregnant</td>
+                                <td>Gestational diabetes can increase future diabetes risk</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Glucose</strong></td>
+                                <td>Plasma glucose concentration (mg/dL)</td>
+                                <td>Primary indicator of blood sugar levels</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Blood Pressure</strong></td>
+                                <td>Diastolic blood pressure (mm Hg)</td>
+                                <td>High BP often associated with diabetes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Skin Thickness</strong></td>
+                                <td>Triceps skin fold thickness (mm)</td>
+                                <td>Indicator of body fat distribution</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Insulin</strong></td>
+                                <td>2-Hour serum insulin (mu U/ml)</td>
+                                <td>Measures insulin response to glucose</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BMI</strong></td>
+                                <td>Body mass index (kg/m²)</td>
+                                <td>Obesity is a major diabetes risk factor</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Diabetes Pedigree Function</strong></td>
+                                <td>Genetic diabetes risk score</td>
+                                <td>Family history of diabetes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Age</strong></td>
+                                <td>Age in years</td>
+                                <td>Diabetes risk increases with age</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Documentation -->
+        <div class="card shadow mb-5">
+            <div class="card-header bg-warning text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-code me-2"></i>
+                    API Documentation
+                </h4>
+            </div>
+            <div class="card-body">
+                <h5>Available Endpoints</h5>
+                
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <code>POST /predict</code> - Single Prediction
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Description:</strong> Predict diabetes for a single patient</p>
+                        <p><strong>Content-Type:</strong> application/json</p>
+                        <p><strong>Request Body:</strong></p>
+                        <pre class="bg-light p-2"><code>{
+  "Pregnancies": 6,
+  "Glucose": 148,
+  "BloodPressure": 72,
+  "SkinThickness": 35,
+  "Insulin": 0,
+  "BMI": 33.6,
+  "DiabetesPedigreeFunction": 0.627,
+  "Age": 50
+}</code></pre>
+                        <p><strong>Response:</strong></p>
+                        <pre class="bg-light p-2"><code>{
+  "Pregnancies": 6,
+  "Glucose": 148,
+  "BloodPressure": 72,
+  "SkinThickness": 35,
+  "Insulin": 0,
+  "BMI": 33.6,
+  "DiabetesPedigreeFunction": 0.627,
+  "Age": 50,
+  "Prediction": 1
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <code>POST /batch-predict</code> - Batch Prediction
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Description:</strong> Predict diabetes for multiple patients via CSV upload</p>
+                        <p><strong>Content-Type:</strong> multipart/form-data</p>
+                        <p><strong>Form Data:</strong> file (CSV file with required columns)</p>
+                        <p><strong>Response:</strong> JSON array with predictions for each row</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="card shadow mb-5">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-cogs me-2"></i>
+                    Technology Stack
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Backend</h6>
+                        <ul>
+                            <li><strong>Framework:</strong> Flask</li>
+                            <li><strong>ML Library:</strong> scikit-learn</li>
+                            <li><strong>Data Processing:</strong> pandas, numpy</li>
+                            <li><strong>Model Persistence:</strong> joblib</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Frontend</h6>
+                        <ul>
+                            <li><strong>UI Framework:</strong> Bootstrap 5</li>
+                            <li><strong>Icons:</strong> Font Awesome</li>
+                            <li><strong>Template Engine:</strong> Jinja2</li>
+                            <li><strong>JavaScript:</strong> Vanilla JS</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="alert alert-warning" role="alert">
+            <h5><i class="fas fa-exclamation-triangle me-2"></i>Medical Disclaimer</h5>
+            <p class="mb-0">
+                This system is for educational and research purposes only. The predictions should not be used as a substitute 
+                for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals 
+                for medical decisions.
+            </p>
+        </div>
+
+        <!-- Contact -->
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-envelope me-2"></i>
+                    Contact & Support
+                </h4>
+            </div>
+            <div class="card-body">
+                <p>
+                    For questions, suggestions, or support regarding this diabetes prediction system, 
+                    please reach out through the following channels:
+                </p>
+                <ul>
+                    <li><strong>Email:</strong> support@diabetes-predictor.com</li>
+                    <li><strong>GitHub:</strong> <a href="#">diabetes-prediction-system</a></li>
+                    <li><strong>Documentation:</strong> <a href="#">API Reference</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
