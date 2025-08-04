@@ -63,16 +63,28 @@ def train_and_save_model():
 # Function to load the trained model
 def load_model():
     '''Load the trained model'''
-    if not os.path.exists(MODEL_PATH):
-        print("Model not found. Training a new model!!!")
-        train_and_save_model()
+    try:
+        if os.path.exists(MODEL_PATH):
+            # Try to load the existing model
+            model = joblib.load(MODEL_PATH)
+            # Test if the model works with current scikit-learn version
+            test_data = np.array([[1, 100, 70, 20, 80, 25.0, 0.5, 30]]).reshape(1, -1)
+            _ = model.predict(test_data)
+            print("Model loaded successfully")
+            return model
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        print("Model incompatible with current environment. Retraining...")
+    
+    # If we reach here, either model doesn't exist or is incompatible
+    print("Training a new model...")
+    train_and_save_model()
     return joblib.load(MODEL_PATH)
 
-model = load_model()
-
-# Initialize model - but handle gracefully for Vercel
+# Initialize model - but handle gracefully for deployment
 try:
     model = load_model()
+    print("Model initialization successful")
 except Exception as e:
     print(f"Failed to initialize model: {e}")
     model = None
@@ -90,6 +102,10 @@ def validate_input(data, required_features):
 def predict():
     '''Real-time prediction endpoint for a specific use case'''
     try:
+        # Check if model is loaded
+        if model is None:
+            return jsonify({"error": "Model not available. Please try again later."}), 500
+            
         data = request.get_json()
         validate_input(data, REQUIRED_FEATURES)
         
@@ -118,6 +134,10 @@ def predict():
 def batch_predict():
     '''Batch prediction endpoint'''
     try:
+        # Check if model is loaded
+        if model is None:
+            return jsonify({"error": "Model not available. Please try again later."}), 500
+            
         # Check if file is provided
         if 'file' not in request.files:
             return jsonify({'error': 'No files uploaded by user'}), 400
@@ -174,6 +194,11 @@ def about():
 def submit_prediction():
     '''Handle form submission for single prediction'''
     try:
+        # Check if model is loaded
+        if model is None:
+            flash('Model not available. Please try again later.', 'error')
+            return redirect(url_for('predict_form'))
+            
         # Get form data
         data = {}
         for feature in REQUIRED_FEATURES:
