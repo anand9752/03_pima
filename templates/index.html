@@ -4,22 +4,22 @@
 <div class="row">
     <div class="col-lg-8 mx-auto">
         <!-- Hero Section -->
-        <div class="jumbotron bg-gradient text-white rounded-3 p-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="jumbotron bg-gradient text-white rounded-3 p-5 mb-5" style="background: linear-gradient(135deg, #2b3f96 0%, #764ba2 100%);">
             <div class="text-center">
-                <h1 class="display-4 fw-bold mb-3">
-                    <i class="fas fa-heartbeat me-3"></i>
+                <h1 class="display-4 fw-bold mb-3" style="color: #ffffff !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">
+                    <i class="fas fa-heartbeat me-3" style="color: #ff4757 !important;"></i>
                     Diabetes Prediction System
                 </h1>
-                <p class="lead mb-4">
+                <p class="lead mb-4" style="color: #f1f2f6 !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); font-size: 1.3rem;">
                     Advanced Machine Learning model to predict diabetes risk using the Pima Indians Diabetes dataset.
                     Get instant predictions based on medical parameters.
                 </p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                    <a href="{{ url_for('predict_form') }}" class="btn btn-light btn-lg me-md-2">
-                        <i class="fas fa-user me-2"></i>Single Prediction
+                    <a href="{{ url_for('predict_form') }}" class="btn btn-lg me-md-2" style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); color: #2b3f96 !important; font-weight: 700; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: none;">
+                        <i class="fas fa-user me-2" style="color: #2b3f96 !important;"></i>Single Prediction
                     </a>
-                    <a href="{{ url_for('batch_form') }}" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-file-upload me-2"></i>Batch Prediction
+                    <a href="{{ url_for('batch_form') }}" class="btn btn-lg" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); color: white !important; font-weight: 700; border: none; box-shadow: 0 8px 20px rgba(255,107,107,0.4);">
+                        <i class="fas fa-file-upload me-2" style="color: white !important;"></i>Batch Prediction
                     </a>
                 </div>
             </div>
