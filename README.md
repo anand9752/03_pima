@@ -1,4 +1,4 @@
-d# Pima Diabetes Prediction System
+ Pima Diabetes Prediction System
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.1.1-green.svg)
